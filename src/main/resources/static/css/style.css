@@ -1,0 +1,142 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: white;
+}
+
+.container {
+    width: 95%;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #FEFAE0;
+    border: 1px solid black;
+}
+
+h2 {
+    text-align: left;
+    margin-bottom: 20px;
+}
+
+.content {
+    display: flex;
+    justify-content: space-between;
+}
+
+.form-container {
+    flex: 1;
+    margin-right: 20px;
+}
+
+.table-container {
+    flex: 1;
+}
+
+.table-wrapper {
+    margin-top: 10px;
+    max-height: 250px; /* Tinggi maksimum tabel untuk memunculkan scrollbar */
+    overflow-y: auto;
+}
+
+form fieldset, .table-container fieldset {
+    border: 1px solid black;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+legend {
+    font-weight: bold;
+}
+
+label {
+    display: block;
+    margin-bottom: 10px;
+}
+
+.form-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.form-group label {
+    width: 110px;
+    margin-right: 8px;
+    font-size: 14px;
+}
+
+.small-input {
+    width: 270px;
+    padding: 4px;
+    font-size: 14px;
+}
+
+.gender-options {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.gender-options input[type="radio"] {
+    width: 16px;
+    height: 16px;
+    margin-right: 5px;
+}
+
+.gender-options label {
+    font-size: 14px;
+}
+
+.years-text {
+    font-size: 14px;
+    padding-left: 8px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: 14px;
+}
+
+table th, table td {
+    border: 1px solid black;
+    padding: 4px;
+    height: 30px;
+}
+
+table th {
+    background-color: #FEFAE0;
+}
+
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+    border: 1px solid black;
+    padding: 10px;
+}
+
+.actions button {
+    padding: 10px 20px;
+}
+
+.actions button:hover {
+    background-color: lightgray;
+}
+
+table tbody tr:hover {
+    background-color: lightgray;
+    cursor: pointer;
+}
+
+.error {
+    color: red;
+    font-size: 14px;
+    margin-top: 5px;
+    display: block;
+}

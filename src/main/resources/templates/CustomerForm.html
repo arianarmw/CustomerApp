@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Pemeliharaan Data Pelanggan</title>
+    <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+    <div class="container">
+        <h2>PEMELIHARAAN DATA PELANGGAN</h2>
+
+        <div class="content">
+            <!-- Form untuk Data Pelanggan -->
+            <div class="form-container">
+                <form id="customerForm" action="/customer/save" method="post" th:object="${customer}">
+                    <fieldset>
+                        <legend>Data Pelanggan</legend>
+
+                        <div class="form-group">
+                            <label for="customerId">Id Pelanggan</label>
+                            <input type="text" th:field="*{customerId}" id="customerId" class="small-input" />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="name">Nama</label>
+                            <input type="text" th:field="*{name}" id="name" class="small-input" />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="address">Alamat</label>
+                            <input type="text" th:field="*{address}" id="address" class="small-input" />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="gender">Jenis Kelamin</label>
+                            <div class="gender-options">
+                                <th:block th:each="gender : ${genders}">
+                                    <input type="radio" th:field="*{gender.genderId}" th:id="'gender_' + ${gender.genderId}" th:value="${gender.genderId}" />
+                                    <label th:for="'gender_' + ${gender.genderId}" th:text="${gender.genderName}"></label>
+                                </th:block>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="age">Umur</label>
+                            <input type="text" th:field="*{age}" id="age" class="small-input" />
+                            <span class="years-text">tahun</span>
+                            <div th:if="${ageError}" class="error">
+                                <p th:text="${ageError}"></p>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="jobSelect">Pekerjaan</label>
+                            <select th:field="*{job.jobId}" id="jobSelect" class="small-input">
+                                <option value="">Pilih Pekerjaan</option>
+                                <th:block th:each="job : ${jobs}">
+                                    <option th:value="${job.jobId}" th:text="${job.jobName}"></option>
+                                </th:block>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="income">Penghasilan</label>
+                            <input type="text" th:field="*{income}" id="income" class="small-input" />
+                            <div th:if="${incomeError}" class="error">
+                                <p th:text="${incomeError}"></p>
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <div class="actions">
+                        <button type="submit">Save</button>
+                        <button type="button" onclick="resetForm()">Reset</button>
+                        <button type="button" onclick="deleteCustomer()">Delete</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Tabel untuk Daftar Pelanggan -->
+            <div class="table-container">
+                <fieldset>
+                    <legend>Daftar Pelanggan</legend>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Nama</th>
+                                    <th>Alamat</th>
+                                    <th>Pekerjaan</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <th:block th:each="customer, iterStat : ${customers}">
+                                    <tr ondblclick="editCustomer(this)" th:attr="data-customerId=${customer.customerId}, data-name=${customer.name}, data-address=${customer.address}, data-gender=${customer.gender.genderId}, data-age=${customer.age}, data-job=${customer.job.jobId}, data-income=${customer.income}">
+                                        <td th:text="${iterStat.index + 1}"></td>
+                                        <td th:text="${customer.name}"></td>
+                                        <td th:text="${customer.address}"></td>
+                                        <td th:text="${customer.job.jobName}"></td>
+                                    </tr>
+                                </th:block>
+                                <th:block th:if="${customers.size() < 7}">
+                                    <th:block th:each="i : ${#numbers.sequence(customers.size() + 1, 7)}">
+                                        <tr>
+                                            <td>&nbsp;</td>
+                                            <td>&nbsp;</td>
+                                            <td>&nbsp;</td>
+                                            <td>&nbsp;</td>
+                                        </tr>
+                                    </th:block>
+                                </th:block>
+                            </tbody>
+                        </table>
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function editCustomer(row) {
+            const customerId = row.getAttribute("data-customerId");
+            const name = row.getAttribute("data-name");
+            const address = row.getAttribute("data-address");
+            const gender = row.getAttribute("data-gender");
+            const age = row.getAttribute("data-age");
+            const job = row.getAttribute("data-job");
+            const income = row.getAttribute("data-income");
+
+            document.getElementById("customerId").value = customerId;
+            document.getElementById("name").value = name;
+            document.getElementById("address").value = address;
+            document.getElementById("age").value = age;
+            document.getElementById("income").value = Math.floor(income);
+
+            const genderRadio = document.querySelector(`input[type="radio"][value="${gender}"]`);
+            if (genderRadio) {
+                genderRadio.checked = true;
+            }
+
+            const jobSelect = document.getElementById("jobSelect");
+            jobSelect.value = job;
+
+            history.replaceState(null, "", "/customer/form/" + customerId);
+        }
+
+        function formatNumber(num) {
+            return parseFloat(num).toLocaleString("id-ID");
+        }
+
+        function resetForm() {
+            document.getElementById("customerForm").reset();
+            history.replaceState(null, "", "/customer/form");
+        }
+
+        function deleteCustomer() {
+            const customerId = document.getElementById("customerId").value;
+            if (customerId) {
+                fetch(`/customer/delete/${customerId}`, {
+                    method: "POST",
+                }).then((response) => {
+                    if (response.ok) {
+                        alert("Customer berhasil dihapus!");
+                        window.location.href = "/customer/form";
+                    } else {
+                        alert("Gagal menghapus Customer.");
+                    }
+                });
+            } else {
+                alert("Pilih Customer untuk menghapus.");
+            }
+        }
+    </script>
+</body>
+</html>
